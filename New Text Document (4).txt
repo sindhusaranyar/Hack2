@@ -1,0 +1,181 @@
+MONGO
+
+/*var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("TIcketBooking");
+  dbo.collection("Adminuser").findOne({}, function(err, result) {
+    if (err) throw err;
+    console.log(result.Theater);
+    db.close();
+  });
+});*/
+
+
+
+
+/*var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("TIcketBooking");
+  var myobj = {  Theater: "Shanthi",Moviename:"Roja",ShowTime:"9am",ShowDate:"1-06-22",NoofSeats:"100",NoofShows:"4",CreateID:"sindhu",UpdateID:"sindhu"
+  };
+  dbo.collection("Adminuser").insertOne(myobj, function(err, res) {
+    if (err) throw err;
+    console.log("1 document inserted");
+    db.close();
+  });
+});*/
+
+
+/*var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://127.0.0.1:27017/";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("TIcketBooking");
+  var myquery = { Theater: "RMZ" };
+  var newvalues = { $set: {Theater: "PVR" } };
+  dbo.collection("Adminuser").updateOne(myquery, newvalues, function(err, res) {
+    if (err) throw err;
+    console.log("1 document updated");
+    db.close();
+  });
+});*/
+
+
+/*var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db("TIcketBooking");
+  var myquery = { Moviename:"Roja" };
+  dbo.collection("Adminuser").deleteOne(myquery, function(err, obj) {
+    if (err) throw err;
+    console.log("1 document deleted");
+    db.close();
+  });
+});*/
+
+const express = require("express");
+
+// recordRoutes is an instance of the express router.
+// We use it to define our routes.
+// The router will be added as a middleware and will take control of requests starting with path /listings.
+const recordRoutes = express.Router();
+
+recordRoutes.route("/TIcketBooking").get(async function (req, res) {
+  const dbConnect = dbo.getDb();
+
+  dbConnect
+    .collection("Adminuser")
+    .find({}).limit(50)
+    .toArray(function (err, result) {
+      if (err) {
+        res.status(400).send("Error fetching listings!");
+     } else {
+        res.json(result);
+      }
+    });
+});
+
+
+
+
+EXPRESS :
+
+
+
+const express = require("express")
+const mongo = require("mongodb").MongoClient
+
+const app = express();
+
+const url = "mongodb://localhost:27017";
+
+app.use(express.json());
+
+let db, trips, expenses
+
+mongo.connect(
+  url,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err, client) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+    db = client.db("TIcketBooking")
+    adminuser = db.collection("admin")
+    clientuser = db.collection("Clientuser")
+  }
+);
+
+
+
+
+app.post("/adminuser", (req, res) => {
+    const name = req.body.name
+    const org = req.body.org
+    const district = req.body.district
+    const state = req.body.state
+    const country = req.body.country
+    const eventtype = req.body.eventtype
+    const eventname = req.body.eventname
+    const eventlocation = req.body.eventlocation
+    const eventdate = req.body.eventdate
+    const eventtime = req.body.eventtime
+    const eventduration = req.body.eventduration
+
+    adminuser.insertOne({   name: name,
+                            org: org, 
+                            district: district, 
+                            state: state, 
+                            country: country, 
+                            eventtype: eventtype, 
+                            eventname: eventname,
+                            eventlocation: eventlocation,
+                            eventdate: eventdate,
+                            eventtime: eventtime,
+                            eventduration: eventduration
+                        }, 
+                        (err, result) => {
+                                                if (err) {
+                                                    console.error(err)
+                                                    res.status(500).json({ err: err })
+                                                    return
+                                                }
+                                                console.log(result)
+                                                res.status(200).json({ ok: true })
+                                            })
+    })
+
+  app.get("/adminuser", (req, res) => {
+    adminuser.find().toArray((err, items) => {
+        if (err) {
+          console.error(err)
+          res.status(500).json({ err: err })
+          return
+        }
+        res.status(200).json({ adminuser: items})
+      })  
+});
+
+  app.post("/expense", (req, res) => {
+    /* */
+  })
+  app.get("/expenses", (req, res) => {
+    /* */
+  });
+
+app.listen(3000, () => console.log("Server ready"));
+
+
